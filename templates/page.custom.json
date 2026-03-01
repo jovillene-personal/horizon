@@ -792,7 +792,7 @@
             },
             "accelerated-checkout": {
               "type": "accelerated-checkout",
-              "name": "asd",
+              "name": "Order Now",
               "static": true,
               "settings": {
                 "label_text": ""
