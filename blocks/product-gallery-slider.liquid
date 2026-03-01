@@ -15,15 +15,7 @@
         <div class="swiper-wrapper">
           {% for image in product.images %}
             <div class="swiper-slide">
-              {{
-                image
-                | image_url: width: 800
-                | image_tag:
-                  width: image.width,
-                  height: image.height,
-                  alt: image.alt,
-                  class: 'product-gallery-image'
-              }}
+              <img src="{{ image | image_url }}" width="100%" height="auto" alt="{{ image.alt }}" class="product-gallery-image" />
             </div>
           {% endfor %}
         </div>
@@ -36,7 +28,8 @@
           <div class="swiper-wrapper">
             {% for image in product.images %}
               <div class="swiper-slide thumbnail-slide">
-                {{
+                <img src="{{ image | image_url }}" width="100%" height="auto" alt="{{ image.alt }}" class="thumbnail-image" />
+                {% comment %} {{
                   image
                   | image_url: width: 100
                   | image_tag:
@@ -44,7 +37,7 @@
                     height: image.height,
                     alt: image.alt,
                     class: 'thumbnail-image'
-                }}
+                }} {% endcomment %}
               </div>
             {% endfor %}
           </div>
