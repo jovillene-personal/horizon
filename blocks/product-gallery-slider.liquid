@@ -1,0 +1,205 @@
+{% comment %}
+  Product gallery slider block - uses passed-in `product` or falls back to closest.product.
+  Intended for use inside sale-section or any other section that provides a `product` variable.
+{% endcomment %}
+
+{% liquid
+  # prefer section setting if available, fall back to nearest product context
+  assign product = closest.section.settings.product | default: closest.product
+%}
+
+{% if product %}
+  <div class="product-gallery-wrapper">
+    <div class="product-gallery-main">
+      <div class="swiper product-gallery-swiper" id="product-main-slider-{{ block.id }}">
+        <div class="swiper-wrapper">
+          {% for image in product.images %}
+            <div class="swiper-slide">
+              {{
+                image
+                | image_url: width: 800
+                | image_tag:
+                  width: image.width,
+                  height: image.height,
+                  alt: image.alt,
+                  class: 'product-gallery-image'
+              }}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    {% if product.images.size > 1 %}
+      <div class="product-gallery-thumbnails">
+        <div class="swiper product-thumbnails-swiper" id="product-thumb-slider-{{ block.id }}">
+          <div class="swiper-wrapper">
+            {% for image in product.images %}
+              <div class="swiper-slide thumbnail-slide">
+                {{
+                  image
+                  | image_url: width: 100
+                  | image_tag:
+                    width: image.width,
+                    height: image.height,
+                    alt: image.alt,
+                    class: 'thumbnail-image'
+                }}
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="custom-product-slider-meta">
+        {% content_for 'blocks' %}
+    </div>
+{% endif %}
+
+{% stylesheet %}
+  /* copy relevant styles from original section */
+  .product-gallery-wrapper {
+    display: flex;
+    margin-bottom: 32px;
+    max-height: 630px;
+  }
+
+  .product-gallery-main {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .product-gallery-swiper {
+    width: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .product-gallery-image {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .product-gallery-thumbnails {
+    width: 100px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .product-thumbnails-swiper {
+    width: 100%;
+    height: auto;
+  }
+
+  .thumbnail-slide {
+    height: 100px;
+    border-radius: 4px;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border-color 0.2s;
+  }
+
+  .thumbnail-slide.swiper-slide-thumb-active {
+    border-color: var(--color-foreground);
+  }
+
+  .thumbnail-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .product-info {
+    margin-bottom: 24px;
+  }
+
+  .product-price {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-top: 8px;
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .price-sale {
+    color: #c5a15e;
+  }
+
+  .price-original {
+    text-decoration: line-through;
+    color: #888;
+    font-size: 16px;
+  }
+
+  @media (max-width: 749px) {
+    .product-gallery-wrapper {
+      display: none;
+    }
+
+    .product-gallery-thumbnails {
+      width: 100%;
+      max-height: 100px;
+    }
+
+    .product-thumbnails-swiper {
+      width: 100%;
+    }
+
+    .thumbnail-slide {
+      width: 100px;
+    }
+  }
+{% endstylesheet %}
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const mainSliderId = 'product-main-slider-{{ block.id }}';
+    const thumbSliderId = 'product-thumb-slider-{{ block.id }}';
+
+    const thumbsSwiper = new Swiper(`#${thumbSliderId}`, {
+      direction: 'vertical',
+      spaceBetween: 8,
+      slidesPerView: 6,
+      freeMode: true,
+      watchSlidesProgress: true,
+    });
+
+    const mainSwiper = new Swiper(`#${mainSliderId}`, {
+      direction: 'horizontal',
+      spaceBetween: 0,
+      thumbs: {
+        swiper: thumbsSwiper,
+      },
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Product Gallery Slider",
+  "settings": [],
+  "blocks": [
+    {
+        "type": "@theme"
+        },
+        {
+        "type": "@app"
+        },
+  ],
+  "presets": [
+    {
+      "name": "Product Gallery Slider Block",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}

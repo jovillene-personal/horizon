@@ -1,0 +1,204 @@
+{% assign product = all_products[section.settings.product] %}
+
+<style>
+    .custom-product-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        max-width: 1120px;
+        margin: 0 auto;
+        gap: 15px;
+    }
+    .section-product-gallery {
+        max-width: 685px;
+    }
+    .custom-product-meta {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    /* override */
+    .custom-product-wrapper .group-block-content .text-block.custom-font-size p{
+        line-height: 30px !important;
+    }
+
+    .custom-product-wrapper > div.custom-product-meta > div:nth-child(2) > div.group-block-content.layout-panel-flex.layout-panel-flex--row.mobile-column > div.spacing-style.text-block.text-block--Aa09pdjdRM1RGaXdhY__text_B7tGJW.custom.custom-typography.custom-font-size.custom-color > h2 {
+        color: #DAA555 !important;
+    }
+
+    product-price div {
+        max-width: 117px;
+        flex-direction: column-reverse;
+        display: flex;
+    }
+
+    product-price div .price {
+        color: #C19B61;
+        font-size: 30px;
+        font-weight: bold;
+    }
+
+    product-price div .compare-at-price {
+        color: #C0C0C0;
+        font-size: 18px;
+        font-weight: 400;
+    }
+
+    .shopify-payment-button__button.shopify-payment-button__button--unbranded {
+        font-weight: 600;
+        min-height: 62px;
+        max-width: 360px;
+        margin: 0 auto;
+        font-size: 22px;
+    }
+
+    @media screen and (max-width: 900px) {
+        product-price div{
+            margin-top: 25px;
+        }
+        .shopify-payment-button__button.shopify-payment-button__button--unbranded {
+            max-width: 416px;
+        }
+
+        .section-product-gallery {
+            padding: 0 12px;
+        }
+
+        div.section.section--full-width.color-scheme-1 > div.border-style.custom-section-content > div{
+            padding-top: 54.78px;
+        }
+    }
+        
+</style>
+
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+
+<div class="custom-product-wrapper">
+    <div class="custom-product-meta">
+        {% content_for 'blocks' %}
+    </div>
+    <div
+    class="
+        section--{{ section.settings.section_width }}
+        color-{{ section.settings.color_scheme }}
+        section-product-gallery
+        spacing-style
+    "
+    style="
+        {% render 'spacing-style', settings: section.settings %}
+    "
+    >
+  {% if product %}
+    {% comment %} render the gallery block directly since it always shows once {% endcomment %}
+    {% content_for 'block', type: 'product-gallery-slider', id: 'gallery' %}
+  {% else %}
+    <div class="placeholder">
+      <p>{{ 'sections.featured_product.onboarding_content' | t }}</p>
+    </div>
+  {% endif %}
+</div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  function updateAcceleratedButton() {
+    const buttons = document.querySelectorAll(
+      ".shopify-payment-button__button.shopify-payment-button__button--unbranded"
+    );
+
+    buttons.forEach(function (button) {
+      if (button.innerText.trim() !== "Order Now") {
+        button.innerText = "Order Now";
+      }
+    });
+  }
+
+  updateAcceleratedButton();
+
+  const observer = new MutationObserver(function () {
+    updateAcceleratedButton();
+  });
+
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true
+  });
+
+});
+</script>
+
+
+{% schema %}
+{
+  "name": "Product Gallery Slider",
+  "blocks": [
+    {
+      "type": "@theme"
+    },
+    {
+      "type": "@app"
+    }
+  ],
+  "settings": [
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Select Product"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "t:settings.width",
+      "options": [
+        {
+          "value": "page-width",
+          "label": "t:options.page"
+        },
+        {
+          "value": "full-width",
+          "label": "t:options.full"
+        }
+      ],
+      "default": "page-width"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 48
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Gallery Slider",
+      "category": "Products"
+    }
+  ]
+}
+{% endschema %}

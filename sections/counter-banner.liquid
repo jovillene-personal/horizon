@@ -1,0 +1,435 @@
+{% assign product = all_products[section.settings.product] %}
+{% assign discount_amount = section.settings.discount_amount | plus: 0 %}
+{% assign end_date = section.settings.end_date %}
+{% assign product = all_products[section.settings.product] %}
+
+{% if product and product.compare_at_price > product.price %}
+  {% assign original_price = product.compare_at_price %}
+  {% assign discounted_price = product.price %}
+  {% assign discount_amount = original_price | minus: discounted_price %}
+{% endif %}
+
+{% if product %}
+  {% assign original_price = product.price %}
+  {% assign discount_cents = discount_amount | times: 100 %}
+  {% assign discounted_price = original_price | minus: discount_cents %}
+{% endif %}
+
+<style>
+.countdown-banner {
+  background-size: cover;
+  background-position: center;
+  padding: 40px 20px 97px;
+  text-align: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.countdown-banner::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0) 50%, #FFFFFF 83.65%);
+    z-index: 1;
+}
+
+.content {
+  background: rgba(255,255,255,0.5);
+  padding: 40px 20px;
+  max-width: 900px;
+  margin:auto;
+  border-radius: 8px;
+  position: relative;
+  z-index: 2;
+  border: 1px solid #E6E6E6;
+}
+
+.heading {
+  font-family: Montserrat;
+  font-weight: 600;
+  font-size: 40px;
+  line-height: 120%;
+  letter-spacing: 0%;
+  margin: 0;
+}
+
+.subheading {
+  font-family: Montserrat;
+  font-size: 24px;
+  line-height: 35px;
+  letter-spacing: -0.8px;
+  margin: 16px 0;
+}
+
+.subheading strong {
+ color: #B87664;
+font-style: Italic;
+
+}
+
+.price {
+  font-size: 22px;
+  margin: 15px 0;
+}
+
+.compare {
+  text-decoration: line-through;
+  color: #888;
+  margin-right: 10px;
+}
+
+.sale {
+  color: #c5a15e;
+  font-weight: bold;
+}
+
+.buttons {
+  margin: 28px auto 13px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8.11px;
+  max-width: 407px;
+}
+
+.buttons a {
+    width: 100%;
+    font-family: Montserrat;
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 23.8px;
+    letter-spacing: 0%;
+    text-align: center;
+    min-height: 62px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn {
+  padding: 14px 30px;
+  text-decoration: none;
+  font-weight: bold;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.primary {
+  background: #c5a15e;
+  color: #fff;
+}
+
+.secondary {
+  background: #ffc439;
+  color: #fff;
+}
+
+.sale-text {
+  font-family: Montserrat;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 120%;
+    letter-spacing: 0%;
+    margin: 0;
+}
+
+.countdown {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 10.41px;
+}
+
+.countdown div {
+  background: #555;
+  color: white;
+  padding: 10.16px 0 15.88px;
+  max-width: 50.9px;
+  width: 100%;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.countdown span {
+  font-family: Montserrat;
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 120%;
+    letter-spacing: 0%;
+}
+.countdown small {
+  font-family: Montserrat;
+    font-weight: 500;
+    font-size: 10px;
+    line-height: 120%;
+    letter-spacing: 0%;
+}
+.afterpay {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn.secondary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.paypal-logo {
+    max-height: 22px;
+    width: auto;
+}
+
+.afterpay p{
+    font-family: Montserrat;
+    font-weight: 400;
+    font-size: 10px;
+    line-height: 14px;
+    letter-spacing: 0%;
+    margin-bottom: 0;
+}
+
+.afterpay-logo {
+    max-height: 29px;
+    width: auto;
+}
+
+.divider {
+  margin: 20px auto 12px;
+  width: 55.83984375px;
+  border-top: 1px solid #D3D3D3;
+}
+
+@media screen and (min-width: 1440px) {
+    .content {
+        min-width: 1116.59px;
+    }
+}
+
+@media screen and (max-width: 900px) {
+    .countdown-banner {
+        padding-bottom: 68px;
+    }
+    .content {
+        padding: 51px 0 62px;
+    }
+
+    .subheading  {
+        margin: 33px 0;
+    }
+    .custom-product-meta {
+        align-items: center;
+        padding-left: 8.32px;
+        padding-right: 8.32px;
+    }
+
+    .btn {
+        padding: 14px 19px;
+    }
+
+    .paypal-logo {
+        max-width: 75px;
+    }
+
+    .buttons {
+        max-width: 202px;
+    }
+
+    .afterpay {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .divider {
+        margin: 20px auto 29px;
+    }
+
+    .countdown{
+        margin-top: 24px;
+    }
+
+    .custom-product-wrapper > div.custom-product-meta > div:nth-child(2) > div.group-block-content.layout-panel-flex.layout-panel-flex--row.mobile-column {
+        flex-direction: column-reverse !important;
+        align-items: center;
+        gap: 21px;
+    }
+    
+    .custom-product-wrapper > div.custom-product-meta > div.spacing-style.text-block.text-block--AOEJoQjA3ajFNS1NkQ__text_4Vh3W6.custom.custom-typography.custom-font-size.custom-color {
+        max-width: 300px;
+        text-align: center;
+        margin-top: 15px;
+        padding-bottom: 35px;
+    }
+
+    .custom-product-wrapper > div.custom-product-meta > div.spacing-style.text-block.text-block--AM1F5dEI5MmNxYU5Re__product_description_zFjjzh.custom.text-block--align-center.custom-typography.custom-font-size.custom-color {
+        padding-top: 50px;
+    }
+}
+</style>
+
+<div class="countdown-banner" style="background-image: url({{ section.settings.background_image | image_url }});">
+    <div class="content">
+
+      <h2 class="heading">{{ section.settings.heading }}</h2>
+
+      <p class="subheading">
+        <strong>Your discount of 
+        {{ discount_amount | money }} off</strong>
+        has been automatically applied.
+      </p>
+      <div class="buttons">
+        {% if product %}
+          <a href="{{ product.url }}" class="btn primary">
+            {{ section.settings.primary_button_text }}
+          </a>
+        {% endif %}
+
+        <a href="{{ section.settings.secondary_button_link }}" class="btn secondary">
+          {{ section.settings.secondary_button_text }}
+          {% if section.settings.paypal_logo != blank %}
+            <img src="{{ section.settings.paypal_logo | image_url }}" width="100%" height="auto" alt="PayPal Logo" class="paypal-logo" />
+          {% endif %}
+        </a>
+      </div>
+
+        {% if section.settings.afterpay_text != blank %}
+            <div class="afterpay">
+                {{ section.settings.afterpay_text }}
+                <img src="{{ section.settings.afterpay_logo | image_url }}" width="100%" height="auto" alt="Afterpay Logo" class="afterpay-logo" />
+            </div>
+        {% endif %}
+
+        <hr class="divider"  />
+
+      <p class="sale-text">
+        {{ section.settings.sale_label }} 
+        {% assign formatted_time = end_date | date: "%I:%M%p" %}
+        {% assign hour = formatted_time | slice: 0, 2 %}
+        {% assign minutes = formatted_time | slice: 3, 2 %}
+        {% assign ampm = formatted_time | slice: 5, 2 %}
+
+        {{ end_date | date: "%I" | plus: 0 }}{% if minutes != "00" %}:{{ minutes }}{% endif %}{{ ampm }}
+        {{ end_date | date: "%b %d, %Y" }}
+      </p>
+
+      <div class="countdown" data-date="{{ end_date }}">
+        <div><span class="days">00</span><small>Days</small></div>
+        <div><span class="hours">00</span><small>Hours</small></div>
+        <div><span class="minutes">00</span><small>Minutes</small></div>
+        <div><span class="seconds">00</span><small>Seconds</small></div>
+      </div>
+
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const countdown = document.querySelector(".countdown");
+  if (!countdown) return;
+
+  const endDate = new Date(countdown.dataset.date).getTime();
+
+  function updateCountdown() {
+    const now = new Date().getTime();
+    const distance = endDate - now;
+
+    if (distance < 0) return;
+
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((distance / (1000 * 60)) % 60);
+    const seconds = Math.floor((distance / 1000) % 60);
+
+    countdown.querySelector(".days").innerText = days;
+    countdown.querySelector(".hours").innerText = hours;
+    countdown.querySelector(".minutes").innerText = minutes;
+    countdown.querySelector(".seconds").innerText = seconds;
+  }
+
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+});
+</script>
+
+{% schema %}
+{
+  "name": "Sale Countdown Banner",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background Image"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "AWESOME!"
+    },
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Select Product"
+    },
+    {
+      "type": "text",
+      "id": "sale_label",
+      "label": "Sale Label",
+      "default": "Valentine’s Day Sale Ends at"
+    },
+    {
+      "type": "text",
+      "id": "end_date",
+      "label": "End Date (YYYY-MM-DD HH:MM:SS)",
+      "default": "2026-02-14 12:00:00"
+    },
+    {
+      "type": "text",
+      "id": "primary_button_text",
+      "label": "Primary Button Text",
+      "default": "Order Now"
+    },
+    {
+      "type": "text",
+      "id": "secondary_button_text",
+      "label": "Secondary Button Text",
+      "default": "Pay with PayPal"
+    },
+    {
+      "type": "richtext",
+      "id": "afterpay_text",
+      "label": "Afterpay Text (optional)",
+      "default": "<p>or 4 interest- free payments of <strong>$57.60</strong> with</p>"
+    },
+    {
+      "type": "image_picker",
+      "id": "afterpay_logo",
+      "label": "Afterpay Logo (optional)"
+    },
+    {
+      "type": "image_picker",
+      "id": "paypal_logo",
+      "label": "PayPal Logo (optional)"
+    },
+    {
+      "type": "url",
+      "id": "secondary_button_link",
+      "label": "Secondary Button Link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sale Countdown Banner"
+    }
+  ]
+}
+{% endschema %}

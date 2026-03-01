@@ -1,0 +1,172 @@
+<style>
+    .countdown {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .countdown_heading {
+        font-family: Montserrat;
+        font-weight: 600;
+        font-size: 16px;
+        line-height: 120%;
+        letter-spacing: 0%;
+        color: #333333;
+    }
+    .countdown-item {
+        background-color: #00000096;
+        color: #fff;
+        width: 50.896484375px;
+        height: 66.3359375px;
+        padding: 10px 15px 15px 11px;
+        border-radius: 5px;
+    }
+
+    .countdown-item span {
+        font-family: Montserrat;
+        font-weight: 700;
+        font-size: 24px;
+        line-height: 120%;
+        letter-spacing: 0%;
+    }
+
+    .countdown-item small {
+        font-family: Montserrat;
+        font-weight: 500;
+        font-size: 10px;
+        line-height: 120%;
+        letter-spacing: 0%;
+    }
+</style>
+<div class="countdown-banner">
+    <div class="countdown_heading">
+        {{ block.settings.heading }} <span class="date"></span>
+    </div>
+  <div 
+    class="countdown"
+    id="countdown-{{ block.id }}"
+    data-end-date="{{ block.settings.countdown_date }}"
+    {{ block.shopify_attributes }}
+  >
+
+    <div class="countdown-item">
+      <span class="days">00</span>
+      <small>Days</small>
+    </div>
+
+    <div class="countdown-item">
+      <span class="hours">00</span>
+      <small>Hours</small>
+    </div>
+
+    <div class="countdown-item">
+      <span class="minutes">00</span>
+      <small>Minutes</small>
+    </div>
+
+    <div class="countdown-item">
+      <span class="seconds">00</span>
+      <small>Seconds</small>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function() {
+  const countdown = document.getElementById("countdown-{{ block.id }}");
+  if (!countdown) return;
+
+  const rawDate = countdown.dataset.endDate;
+  if (!rawDate) {
+    console.error("Countdown date is missing.");
+    return;
+  }
+
+  const endDate = new Date(rawDate);
+  if (isNaN(endDate.getTime())) {
+    console.error("Invalid countdown date format. Use ISO format: YYYY-MM-DDTHH:MM:SS");
+    return;
+  }
+
+  function getOrdinal(day) {
+    if (day > 3 && day < 21) return "th";
+    switch (day % 10) {
+      case 1: return "st";
+      case 2: return "nd";
+      case 3: return "rd";
+      default: return "th";
+    }
+  }
+
+  function formatDate(date) {
+    const options = { month: "short" };
+    const month = date.toLocaleString("en-US", options);
+    const day = date.getDate();
+    const year = date.getFullYear();
+
+    let hours = date.getHours();
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const ampm = hours >= 12 ? "PM" : "AM";
+
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+
+    return `${hours}${ampm} ${month} ${day}${getOrdinal(day)} ${year}`;
+  }
+
+  const dateSpan = document.querySelector(".countdown_heading .date");
+  if (dateSpan) {
+    dateSpan.textContent = formatDate(endDate);
+  }
+  function update() {
+    const now = Date.now();
+    const distance = endDate.getTime() - now;
+
+    if (distance <= 0) {
+      countdown.innerHTML = "Expired";
+      return;
+    }
+
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((distance / (1000 * 60)) % 60);
+    const seconds = Math.floor((distance / 1000) % 60);
+
+    countdown.querySelector(".days").textContent = String(days).padStart(2, "0");
+    countdown.querySelector(".hours").textContent = String(hours).padStart(2, "0");
+    countdown.querySelector(".minutes").textContent = String(minutes).padStart(2, "0");
+    countdown.querySelector(".seconds").textContent = String(seconds).padStart(2, "0");
+  }
+
+  update();
+  setInterval(update, 1000);
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Countdown",
+  "settings": [
+    {
+        "type": "text",
+        "id": "heading",
+        "label": "Heading",
+        "default": "Sale ends in:"
+    },
+    {
+      "type": "text",
+      "id": "countdown_date",
+      "label": "Countdown End Date (ISO Format)",
+      "default": "2026-12-31T23:59:59"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Countdown",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}
